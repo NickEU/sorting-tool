@@ -1,7 +1,7 @@
 package sorting
 
 enum class InputType {
-    NUMBER,
+    LONG,
     LINE,
     WORD
 }
