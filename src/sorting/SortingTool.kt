@@ -10,9 +10,11 @@ class SortingTool(args: Array<String>) {
     }
 
     fun run() {
-        val userNums = Scanner(System.`in`).tokens()
-                .mapToInt(Integer::parseInt).toList()
-        getStatsForNumbers(userNums)
+        when (inputType) {
+            InputType.WORD -> println()
+            InputType.LINE -> println()
+            InputType.NUMBER -> getStatsForNumbers()
+        }
     }
 
     private fun parseArguments(args: Array<String>): InputType {
@@ -30,10 +32,12 @@ class SortingTool(args: Array<String>) {
     }
 }
 
-fun getStatsForNumbers(numbers: List<Int>) {
-    val totalCount = numbers.count()
-    val max = numbers.max()
-    val times = numbers.filter{ n -> n == max }.size
+fun getStatsForNumbers() {
+    val userNums = Scanner(System.`in`).tokens()
+            .mapToInt(Integer::parseInt).toList()
+    val totalCount = userNums.count()
+    val max = userNums.max()
+    val times = userNums.filter{ n -> n == max }.size
     println("Total numbers: $totalCount.")
     println("The greatest number: $max ($times time(s)).")
 }
