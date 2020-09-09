@@ -31,9 +31,8 @@ class SortingTool(args: Array<String>) {
     }
 
     private fun printStats(stats: InputStats<*>) {
-        val isLine = inputType == InputType.LINE
         val type = inputType.getName()
-        val optionalBr = if (!isLine) "" else "\n"
+        val optionalBr = if (inputType != InputType.LINE) "" else "\n"
         println("Total ${type}s: ${stats.totalCount}.")
         println("The ${inputType.getWordMax()} $type: $optionalBr${stats.maxElement}" +
                 "$optionalBr (${stats.times} time(s), ${stats.percentage}%).")
