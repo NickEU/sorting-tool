@@ -39,8 +39,15 @@ class SortingTool(args: Array<String>) {
     }
 
     private fun parseArguments(args: Array<String>): InputType {
-        if (args.isEmpty() || args[0] != "-dataType") {
+        if (args.isEmpty()) {
             return InputType.WORD
+        }
+
+        when (args[0]) {
+            "-sortIntegers" -> return InputType.LONG
+            "-dataType" -> {
+            }
+            else -> return InputType.WORD
         }
 
         return when (args[1]) {
