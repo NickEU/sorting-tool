@@ -27,15 +27,15 @@ class SortingTool(args: Array<String>) {
         val times = input.filter { n -> n == longest }.size
         val percentage = (100.0 * times / totalCount).toInt()
 
-        printStatsForString(InputStats(totalCount, longest, times, percentage))
+        printStats(InputStats(totalCount, longest, times, percentage))
     }
 
-    private fun printStatsForString(stats: InputStats<String?>) {
-        val isWord = inputType == InputType.WORD
-        val type = if (isWord) "word" else "line"
-        val optionalBr = if (isWord) "" else "\n"
+    private fun printStats(stats: InputStats<*>) {
+        val isLine = inputType == InputType.LINE
+        val type = inputType.getName()
+        val optionalBr = if (!isLine) "" else "\n"
         println("Total ${type}s: ${stats.totalCount}.")
-        println("The longest $type: $optionalBr${stats.longest}" +
+        println("The ${inputType.getWordMax()} $type: $optionalBr${stats.longest}" +
                 "$optionalBr (${stats.times} time(s), ${stats.percentage}%).")
     }
 
@@ -47,8 +47,8 @@ class SortingTool(args: Array<String>) {
         val max = userNums.max()
         val times = userNums.filter { n -> n == max }.size
         val percentage = (100.0 * times / totalCount).toInt()
-        println("Total numbers: $totalCount.")
-        println("The greatest number: $max ($times time(s), $percentage%).")
+
+        printStats(InputStats(totalCount, max, times, percentage))
     }
 
     private fun parseArguments(args: Array<String>): InputType {
