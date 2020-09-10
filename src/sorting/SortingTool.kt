@@ -6,6 +6,7 @@ import kotlin.streams.toList
 class SortingTool(args: Array<String>) {
     private val inputType: InputType = parseArguments(args)
     private val sc = Scanner(System.`in`)
+    private var performSort = false
 
     fun run() {
         val whiteSpaceDelimiter = "\\s+"
@@ -27,7 +28,14 @@ class SortingTool(args: Array<String>) {
         val userNums = sc.tokens()
                 .mapToInt(Integer::parseInt)
                 .toList()
-        printStats(InputStats(userNums, userNums.max()))
+        if (performSort) {
+            val sortedNums = userNums.sorted()
+                    .joinToString(" ")
+            println("Total numbers: ${userNums.size}.")
+            println("Sorted data: $sortedNums")
+        } else {
+            printStats(InputStats(userNums, userNums.max()))
+        }
     }
 
     private fun printStats(stats: InputStats<*>) {
@@ -39,15 +47,13 @@ class SortingTool(args: Array<String>) {
     }
 
     private fun parseArguments(args: Array<String>): InputType {
-        if (args.isEmpty()) {
-            return InputType.WORD
+        if (args.contains("-sortIntegers")) {
+            performSort = true
+            return InputType.LONG
         }
 
-        when (args[0]) {
-            "-sortIntegers" -> return InputType.LONG
-            "-dataType" -> {
-            }
-            else -> return InputType.WORD
+        if (args.isEmpty() || args[0] != "-dataType") {
+            return InputType.WORD
         }
 
         return when (args[1]) {
