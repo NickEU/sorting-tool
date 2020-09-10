@@ -1,6 +1,6 @@
 package sorting
 
-import java.util.Scanner
+import java.util.*
 import kotlin.streams.toList
 
 class SortingTool(args: Array<String>) {
@@ -29,7 +29,7 @@ class SortingTool(args: Array<String>) {
             println("Total ${name}s: ${elements.size}.")
             println("Sorted data:$separator$sortedElements")
         } else if (config.sortingType == SortingType.BY_COUNT) {
-            printElementsByCount()
+            printElementsByCount(elements)
         }
     }
 
@@ -43,19 +43,32 @@ class SortingTool(args: Array<String>) {
             println("Total numbers: ${userNums.size}.")
             println("Sorted data: $sortedNums")
         } else if (config.sortingType == SortingType.BY_COUNT){
-            printElementsByCount()
+            printElementsByCount(userNums)
         }
     }
 
-    private fun printElementsByCount() {
-        TODO("Not yet implemented")
+    private fun <T : Comparable<T>> printElementsByCount(elements: List<T>) {
+        val occurrences = countOccurrences(elements)
+        val type = config.inputType.getName()
+        val count = elements.count()
+        println("Total ${type}s: $count")
+        occurrences.entries.forEach { println("${it.key}: ${it.value} time(s), ${(100.0 * it.value / count).toInt()}%") }
     }
 
-    private fun printStats(stats: InputStats<*>) {
-        val type = config.inputType.getName()
-        val optionalBr = if (config.inputType != InputType.LINE) "" else "\n"
-        println("Total ${type}s: ${stats.totalCount}.")
-        println("The ${config.inputType.getWordMax()} $type: $optionalBr${stats.maxElement}" +
-                "$optionalBr (${stats.times} time(s), ${stats.percentage}%).")
+    private fun <T : Comparable<T>> countOccurrences(elements: List<T>): Map<T, Int> {
+        val result = mutableMapOf<T, Int>()
+        for (el in elements) {
+            val frequency = result[el] ?: 0
+            result[el] = frequency + 1
+        }
+
+        return result.entries.sortedBy { o -> o.value }
+                .sortedWith(Comparator { a, b ->
+                    when {
+                        (a.value == b.value) -> a.key.compareTo(b.key)
+                        else -> a.value - b.value
+                    }
+                })
+                .associate { it.toPair() }
     }
 }
