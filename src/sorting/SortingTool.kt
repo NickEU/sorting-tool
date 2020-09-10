@@ -18,9 +18,19 @@ class SortingTool(args: Array<String>) {
     }
 
     private fun printSortedStrings(delimiter: String) {
-        val input = sc.useDelimiter(delimiter)
+        val elements = sc.useDelimiter(delimiter)
                 .tokens().toList()
-        printStats(InputStats(input, input.maxBy { it.length }))
+        if (config.sortingType == SortingType.NATURAL) {
+            val separator = if (config.inputType == InputType.WORD) " " else "\n"
+            val name = config.inputType.getName()
+            val sortedElements = elements.sorted()
+                    .joinToString(separator)
+
+            println("Total ${name}s: ${elements.size}.")
+            println("Sorted data:$separator$sortedElements")
+        } else if (config.sortingType == SortingType.BY_COUNT) {
+            printElementsByCount()
+        }
     }
 
     private fun printSortedNumbers() {
