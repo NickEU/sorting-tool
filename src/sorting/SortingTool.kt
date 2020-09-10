@@ -52,7 +52,7 @@ class SortingTool(args: Array<String>) {
             return InputType.LONG
         }
 
-        if (args.isEmpty() || args[0] != "-dataType") {
+        if (args.size < 2 || args[0] != "-dataType") {
             return InputType.WORD
         }
 
