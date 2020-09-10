@@ -11,48 +11,47 @@ class SortingTool(args: Array<String>) {
         val whiteSpaceDelimiter = "\\s+"
         val newlineDelimiter = "\\R"
         when (config.inputType) {
-            InputType.WORD -> printSortedStrings(whiteSpaceDelimiter)
-            InputType.LINE -> printSortedStrings(newlineDelimiter)
-            InputType.LONG -> printSortedNumbers()
+            InputType.WORD -> printResults(collectUserInputToStrList(whiteSpaceDelimiter))
+            InputType.LINE -> printResults(collectUserInputToStrList(newlineDelimiter))
+            InputType.LONG -> printResults(collectUserInputToIntList())
         }
     }
 
-    private fun printSortedStrings(delimiter: String) {
-        val elements = sc.useDelimiter(delimiter)
-                .tokens().toList()
-        if (config.sortingType == SortingType.NATURAL) {
-            val separator = if (config.inputType == InputType.WORD) " " else "\n"
-            val name = config.inputType.getName()
-            val sortedElements = elements.sorted()
-                    .joinToString(separator)
-
-            println("Total ${name}s: ${elements.size}.")
-            println("Sorted data:$separator$sortedElements")
-        } else if (config.sortingType == SortingType.BY_COUNT) {
-            printElementsByCount(elements)
-        }
-    }
-
-    private fun printSortedNumbers() {
-        val userNums = sc.tokens()
+    private fun collectUserInputToIntList(): List<Int> {
+        return sc.tokens()
                 .mapToInt(Integer::parseInt)
                 .toList()
-        if (config.sortingType == SortingType.NATURAL) {
-            val sortedNums = userNums.sorted()
-                    .joinToString(" ")
-            println("Total numbers: ${userNums.size}.")
-            println("Sorted data: $sortedNums")
-        } else if (config.sortingType == SortingType.BY_COUNT){
-            printElementsByCount(userNums)
+    }
+    private fun collectUserInputToStrList(delimiter: String): List<String> {
+        return sc.useDelimiter(delimiter)
+                .tokens().toList()
+    }
+
+    private fun <T : Comparable<T>> printResults(elements: List<T>) {
+        when (config.sortingType) {
+            SortingType.NATURAL -> printElementsNatural(elements)
+            SortingType.BY_COUNT -> printElementsByCount(elements)
         }
+    }
+
+    private fun <T : Comparable<T>> printElementsNatural(elements: List<T>) {
+        val separator = if (config.inputType == InputType.LINE) "\n" else " "
+        val name = config.inputType.getName()
+        val sortedElements = elements.sorted()
+                .joinToString(separator)
+        println("Total ${name}s: ${elements.size}.")
+        println("Sorted data:$separator$sortedElements")
     }
 
     private fun <T : Comparable<T>> printElementsByCount(elements: List<T>) {
         val occurrences = countOccurrences(elements)
-        val type = config.inputType.getName()
         val count = elements.count()
-        println("Total ${type}s: $count")
-        occurrences.entries.forEach { println("${it.key}: ${it.value} time(s), ${(100.0 * it.value / count).toInt()}%") }
+        println("Total ${config.inputType.getName()}s: $count")
+        occurrences.entries.forEach {
+            val percentage = (100.0 * it.value / count).toInt()
+            println("${it.key}: ${it.value} time(s)," +
+                    " $percentage%")
+        }
     }
 
     private fun <T : Comparable<T>> countOccurrences(elements: List<T>): Map<T, Int> {
@@ -62,13 +61,12 @@ class SortingTool(args: Array<String>) {
             result[el] = frequency + 1
         }
 
-        return result.entries.sortedBy { o -> o.value }
+        return result.entries
                 .sortedWith(Comparator { a, b ->
                     when {
                         (a.value == b.value) -> a.key.compareTo(b.key)
                         else -> a.value - b.value
                     }
-                })
-                .associate { it.toPair() }
+                }).associate { it.toPair() }
     }
 }
