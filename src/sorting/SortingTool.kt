@@ -22,6 +22,7 @@ class SortingTool(args: Array<String>) {
                 .mapToInt(Integer::parseInt)
                 .toList()
     }
+
     private fun collectUserInputToStrList(delimiter: String): List<String> {
         return sc.useDelimiter(delimiter)
                 .tokens().toList()
@@ -49,20 +50,14 @@ class SortingTool(args: Array<String>) {
         println("Total ${config.inputType.getName()}s: $count")
         occurrences.entries.forEach {
             val percentage = (100.0 * it.value / count).toInt()
-            println("${it.key}: ${it.value} time(s)," +
-                    " $percentage%")
+            println("${it.key}: ${it.value} time(s), $percentage%")
         }
     }
 
     private fun <T : Comparable<T>> countOccurrences(elements: List<T>): Map<T, Int> {
-        val result = mutableMapOf<T, Int>()
-        for (el in elements) {
-            val frequency = result[el] ?: 0
-            result[el] = frequency + 1
-        }
-
-        return result.entries
-                .sortedWith(Comparator { a, b ->
+        return elements.groupingBy { it }
+                .eachCount()
+                .entries.sortedWith(Comparator { a, b ->
                     when {
                         (a.value == b.value) -> a.key.compareTo(b.key)
                         else -> a.value - b.value
