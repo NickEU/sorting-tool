@@ -4,7 +4,7 @@ import java.util.Scanner
 import kotlin.streams.toList
 
 class SortingTool(args: Array<String>) {
-    private val config = ConfigFromArgs(args)
+    private val config: Config = ArgsParser.buildConfig(args)
     private val sc = Scanner(System.`in`)
     private var performSort = false
 

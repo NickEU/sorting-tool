@@ -2,9 +2,15 @@ package sorting
 
 import java.lang.IllegalArgumentException
 
-class ConfigFromArgs(private val args: Array<String>) {
-    val inputType: InputType = parseArgsForInputType()
-    val sortingType: SortingType = parseArgsForSortingType()
+object ArgsParser {
+    private lateinit var args: Array<String>
+
+    fun buildConfig(args: Array<String>): Config {
+        this.args = args
+        val inputType: InputType = parseArgsForInputType()
+        val sortingType: SortingType = parseArgsForSortingType()
+        return Config(inputType, sortingType)
+    }
 
     private fun parseArgsForInputType(): InputType {
         val idxOfDataTypeCmd = args.indexOf("-dataType")
@@ -47,4 +53,5 @@ class ConfigFromArgs(private val args: Array<String>) {
 
         return potentialArgIdx
     }
+
 }
