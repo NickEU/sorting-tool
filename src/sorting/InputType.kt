@@ -6,5 +6,4 @@ enum class InputType(private val typeName: String) {
     WORD("word");
 
     fun getName(): String = typeName
-    fun getWordMax(): String = if (this.name == LONG.name) "greatest" else "longest"
 }
