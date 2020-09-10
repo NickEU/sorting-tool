@@ -47,7 +47,7 @@ object ArgsParser {
 
     private fun parseFindIndexOfArg(idxOfCmd: Int): Int {
         val potentialArgIdx = idxOfCmd + 1
-        if (args.lastIndex == potentialArgIdx) {
+        if (args.lastIndex < potentialArgIdx) {
             throw IllegalArgumentException()
         }
 
