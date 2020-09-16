@@ -1,13 +1,19 @@
 package sorting
 
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.streams.toList
 
-class SortingTool(args: Array<String>) {
-    private val config: Config = ArgsParser.buildConfig(args)
+class SortingTool {
+    private lateinit var config: Config
     private val sc = Scanner(System.`in`)
 
-    fun run() {
+    fun run(args: Array<String>) {
+        try {
+            config = ArgsParser.buildConfig(args)
+        } catch(e: IllegalArgumentException) {
+            return
+        }
         val whiteSpaceDelimiter = "\\s+"
         val newlineDelimiter = "\\R"
         when (config.inputType) {
