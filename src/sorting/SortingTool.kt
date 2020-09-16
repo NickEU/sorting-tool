@@ -1,26 +1,45 @@
 package sorting
 
+import java.lang.IllegalArgumentException
+import java.lang.NumberFormatException
 import java.util.*
 import kotlin.streams.toList
 
-class SortingTool(args: Array<String>) {
-    private val config: Config = ArgsParser.buildConfig(args)
+class SortingTool {
+    private lateinit var config: Config
     private val sc = Scanner(System.`in`)
 
-    fun run() {
+    fun run(args: Array<String>) {
+        try {
+            config = ArgsParser.buildConfig(args)
+        } catch (e: IllegalArgumentException) {
+            return
+        }
         val whiteSpaceDelimiter = "\\s+"
         val newlineDelimiter = "\\R"
         when (config.inputType) {
             InputType.WORD -> printResults(collectUserInputToStrList(whiteSpaceDelimiter))
             InputType.LINE -> printResults(collectUserInputToStrList(newlineDelimiter))
-            InputType.LONG -> printResults(collectUserInputToIntList())
+            InputType.LONG -> printResults(collectUserInputToLongList())
         }
     }
 
-    private fun collectUserInputToIntList(): List<Int> {
+    private fun collectUserInputToLongList(): List<Long> {
         return sc.tokens()
-                .mapToInt(Integer::parseInt)
+                .filter { s ->
+                    tryParse(s) != null
+                }
+                .mapToLong(String::toLong)
                 .toList()
+    }
+
+    private fun tryParse(token: String): Long? {
+        return try {
+            token.toLong()
+        } catch (e: NumberFormatException) {
+            println("\"$token\" is not a long. It will be skipped")
+            null
+        }
     }
 
     private fun collectUserInputToStrList(delimiter: String): List<String> {
