@@ -1,6 +1,7 @@
 package sorting
 
 import java.lang.IllegalArgumentException
+import java.lang.NumberFormatException
 import java.util.*
 import kotlin.streams.toList
 
@@ -11,7 +12,7 @@ class SortingTool {
     fun run(args: Array<String>) {
         try {
             config = ArgsParser.buildConfig(args)
-        } catch(e: IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             return
         }
         val whiteSpaceDelimiter = "\\s+"
@@ -25,8 +26,20 @@ class SortingTool {
 
     private fun collectUserInputToIntList(): List<Int> {
         return sc.tokens()
+                .filter { s ->
+                    tryParse(s) != null
+                }
                 .mapToInt(Integer::parseInt)
                 .toList()
+    }
+
+    private fun tryParse(token: String): Int? {
+        return try {
+            Integer.parseInt(token)
+        } catch (e: NumberFormatException) {
+            println("\"$token\" is not a long. It will be skipped")
+            null
+        }
     }
 
     private fun collectUserInputToStrList(delimiter: String): List<String> {
