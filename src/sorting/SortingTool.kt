@@ -20,22 +20,22 @@ class SortingTool {
         when (config.inputType) {
             InputType.WORD -> printResults(collectUserInputToStrList(whiteSpaceDelimiter))
             InputType.LINE -> printResults(collectUserInputToStrList(newlineDelimiter))
-            InputType.LONG -> printResults(collectUserInputToIntList())
+            InputType.LONG -> printResults(collectUserInputToLongList())
         }
     }
 
-    private fun collectUserInputToIntList(): List<Int> {
+    private fun collectUserInputToLongList(): List<Long> {
         return sc.tokens()
                 .filter { s ->
                     tryParse(s) != null
                 }
-                .mapToInt(Integer::parseInt)
+                .mapToLong(String::toLong)
                 .toList()
     }
 
-    private fun tryParse(token: String): Int? {
+    private fun tryParse(token: String): Long? {
         return try {
-            Integer.parseInt(token)
+            token.toLong()
         } catch (e: NumberFormatException) {
             println("\"$token\" is not a long. It will be skipped")
             null
