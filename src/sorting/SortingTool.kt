@@ -76,11 +76,11 @@ class SortingTool {
     private fun <T : Comparable<T>> countOccurrences(elements: List<T>): Map<T, Int> {
         return elements.groupingBy { it }
                 .eachCount()
-                .entries.sortedWith(Comparator { a, b ->
+                .entries.sortedWith { a, b ->
                     when {
                         (a.value == b.value) -> a.key.compareTo(b.key)
                         else -> a.value - b.value
                     }
-                }).associate { it.toPair() }
+                }.associate { it.toPair() }
     }
 }
