@@ -3,20 +3,15 @@ package sorting
 import java.lang.IllegalArgumentException
 
 object ArgsParser {
-    private const val dataTypeCmd = "-dataType"
-    private const val sortingTypeCmd = "-sortingType"
-    private const val inputFileCmd = "-inputFile"
-    private const val outputFileCmd = "-outputFile"
-    private val commands = listOf(dataTypeCmd, sortingTypeCmd, inputFileCmd, outputFileCmd)
     private lateinit var args: Array<String>
 
     fun buildConfig(args: Array<String>): Config {
         this.args = args
         val inputType: InputType = parseArgsForInputType()
         val sortingType: SortingType = parseArgsForSortingType()
-        parseArgsForInvalidCmds()
-        val inputFile: String = parseArgsForFileName(inputFileCmd)
-        val outputFile: String = parseArgsForFileName(outputFileCmd)
+        parseArgsForInvalidCommands()
+        val inputFile: String = parseArgsForFileName(ValidCommands.INPUT_FILE.cmd)
+        val outputFile: String = parseArgsForFileName(ValidCommands.OUTPUT_FILE.cmd)
         return Config(inputType, sortingType, inputFile, outputFile)
     }
 
@@ -29,16 +24,16 @@ object ArgsParser {
         return args[parseFindIndexOfArg(idxOfCmd, cmd)]
     }
 
-    private fun parseArgsForInvalidCmds() {
+    private fun parseArgsForInvalidCommands() {
         for (arg in args) {
-            if (arg.startsWith("-") && !commands.contains(arg)) {
+            if (arg.startsWith("-") && ValidCommands.values().none { it.cmd == arg }) {
                 println("\"$arg\" is not a valid parameter. It will be skipped.")
             }
         }
     }
 
     private fun parseArgsForInputType(): InputType {
-        val idxOfDataTypeCmd = args.indexOf(dataTypeCmd)
+        val idxOfDataTypeCmd = args.indexOf(ValidCommands.DATA_TYPE.cmd)
         if (idxOfDataTypeCmd == -1) {
             return InputType.WORD
         }
@@ -55,7 +50,7 @@ object ArgsParser {
     }
 
     private fun parseArgsForSortingType(): SortingType {
-        val idxOfSortingTypeCmd = args.indexOf(sortingTypeCmd)
+        val idxOfSortingTypeCmd = args.indexOf(ValidCommands.SORTING_TYPE.cmd)
         if (idxOfSortingTypeCmd == -1) {
             return SortingType.NATURAL
         }
