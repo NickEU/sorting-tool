@@ -1,8 +1,10 @@
 package sorting
 
+import java.io.File
 import java.lang.IllegalArgumentException
 import java.lang.NumberFormatException
 import java.util.*
+import java.util.stream.Stream
 import kotlin.streams.toList
 
 class SortingTool {
@@ -15,17 +17,20 @@ class SortingTool {
         } catch (e: IllegalArgumentException) {
             return
         }
-        val whiteSpaceDelimiter = "\\s+"
-        val newlineDelimiter = "\\R"
+        val delimiter = if (config.inputType == InputType.LINE) "\\R" else "\\s+"
+        val tokens = if (config.inputFileName.isNotEmpty())
+            File(config.inputFileName).readText().split(delimiter).stream()
+        else sc.useDelimiter(delimiter).tokens()
+
         when (config.inputType) {
-            InputType.WORD -> printResults(collectUserInputToStrList(whiteSpaceDelimiter))
-            InputType.LINE -> printResults(collectUserInputToStrList(newlineDelimiter))
-            InputType.LONG -> printResults(collectUserInputToLongList())
+            InputType.WORD -> printResults(tokens.toList())
+            InputType.LINE -> printResults(tokens.toList())
+            InputType.LONG -> printResults(collectUserInputToLongList(tokens))
         }
     }
 
-    private fun collectUserInputToLongList(): List<Long> {
-        return sc.tokens()
+    private fun collectUserInputToLongList(tokens: Stream<String>): List<Long> {
+        return tokens
                 .filter { s ->
                     tryParse(s) != null
                 }
@@ -40,11 +45,6 @@ class SortingTool {
             println("\"$token\" is not a long. It will be skipped")
             null
         }
-    }
-
-    private fun collectUserInputToStrList(delimiter: String): List<String> {
-        return sc.useDelimiter(delimiter)
-                .tokens().toList()
     }
 
     private fun <T : Comparable<T>> printResults(elements: List<T>) {
