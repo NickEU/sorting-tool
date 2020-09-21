@@ -17,14 +17,7 @@ object ArgsParser {
         parseArgsForInvalidCmds()
         val inputFile: String = parseArgsForFileName(inputFileCmd)
         val outputFile: String = parseArgsForFileName(outputFileCmd)
-        val config = Config(inputType, sortingType)
-        if (inputFile.isNotEmpty()) {
-            config.inputFileName = inputFile
-        }
-        if (outputFile.isNotEmpty()) {
-            config.outputFileName = outputFile
-        }
-        return config
+        return Config(inputType, sortingType, inputFile, outputFile)
     }
 
     private fun parseArgsForFileName(cmd: String): String {
