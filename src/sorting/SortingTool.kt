@@ -18,15 +18,20 @@ class SortingTool {
             return
         }
         val delimiter = if (config.inputType == InputType.LINE) "\\R" else "\\s+"
-        val tokens = if (config.inputFileName.isNotEmpty())
-            File(config.inputFileName).readText().split(delimiter).stream()
-        else sc.useDelimiter(delimiter).tokens()
+        val tokens =
+                if (config.inputFileName.isNotEmpty())
+                    getTokensFromFile(delimiter)
+                else sc.useDelimiter(delimiter).tokens()
 
         when (config.inputType) {
             InputType.WORD -> printResults(tokens.toList())
             InputType.LINE -> printResults(tokens.toList())
             InputType.LONG -> printResults(collectUserInputToLongList(tokens))
         }
+    }
+
+    private fun getTokensFromFile(delimiter: String): Stream<String> {
+        return File(config.inputFileName).readText().split(delimiter).stream()
     }
 
     private fun collectUserInputToLongList(tokens: Stream<String>): List<Long> {
