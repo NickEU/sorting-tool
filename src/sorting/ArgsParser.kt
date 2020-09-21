@@ -5,6 +5,8 @@ import java.lang.IllegalArgumentException
 object ArgsParser {
     private const val dataTypeCmd = "-dataType"
     private const val sortingTypeCmd = "-sortingType"
+    private const val inputFileCmd = "-inputFile"
+    private const val outputFileCmd = "-outputFile"
     private lateinit var args: Array<String>
 
     fun buildConfig(args: Array<String>): Config {
@@ -12,7 +14,25 @@ object ArgsParser {
         val inputType: InputType = parseArgsForInputType()
         val sortingType: SortingType = parseArgsForSortingType()
         parseArgsForInvalidCmds()
-        return Config(inputType, sortingType)
+        val inputFile: String = parseArgsForFileName(inputFileCmd)
+        val outputFile: String = parseArgsForFileName(outputFileCmd)
+        val config = Config(inputType, sortingType)
+        if (inputFile.isNotEmpty()) {
+            config.inputFileName = inputFile
+        }
+        if (outputFile.isNotEmpty()) {
+            config.outputFileName = outputFile
+        }
+        return config
+    }
+
+    private fun parseArgsForFileName(cmd: String): String {
+        val idxOfCmd = args.indexOf(cmd)
+        if (idxOfCmd == -1) {
+            return ""
+        }
+
+        return args[parseFindIndexOfArg(idxOfCmd, cmd)]
     }
 
     private fun parseArgsForInvalidCmds() {
