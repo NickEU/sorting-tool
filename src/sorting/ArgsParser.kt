@@ -7,6 +7,7 @@ object ArgsParser {
     private const val sortingTypeCmd = "-sortingType"
     private const val inputFileCmd = "-inputFile"
     private const val outputFileCmd = "-outputFile"
+    private val commands = listOf(dataTypeCmd, sortingTypeCmd, inputFileCmd, outputFileCmd)
     private lateinit var args: Array<String>
 
     fun buildConfig(args: Array<String>): Config {
@@ -37,7 +38,7 @@ object ArgsParser {
 
     private fun parseArgsForInvalidCmds() {
         for (arg in args) {
-            if (arg.startsWith("-") && arg != dataTypeCmd && arg != sortingTypeCmd) {
+            if (arg.startsWith("-") && !commands.contains(arg)) {
                 println("\"$arg\" is not a valid parameter. It will be skipped.")
             }
         }
