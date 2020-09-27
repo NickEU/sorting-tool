@@ -24,9 +24,9 @@ class SortingTool {
                 else sc.useDelimiter(delimiter).tokens()
 
         when (config.inputType) {
-            InputType.WORD -> printResults(tokens.toList())
-            InputType.LINE -> printResults(tokens.toList())
-            InputType.LONG -> printResults(collectUserInputToLongList(tokens))
+            InputType.WORD -> printResultsSelector(tokens.toList())
+            InputType.LINE -> printResultsSelector(tokens.toList())
+            InputType.LONG -> printResultsSelector(stringsToListOfLongs(tokens))
         }
     }
 
@@ -34,16 +34,15 @@ class SortingTool {
         return File(config.inputFileName).readText().split(delimiter).stream()
     }
 
-    private fun collectUserInputToLongList(tokens: Stream<String>): List<Long> {
+    private fun stringsToListOfLongs(tokens: Stream<String>): List<Long> {
         return tokens
                 .filter { s ->
-                    tryParse(s) != null
-                }
-                .mapToLong(String::toLong)
+                    tryParseToLong(s) != null
+                }.mapToLong(String::toLong)
                 .toList()
     }
 
-    private fun tryParse(token: String): Long? {
+    private fun tryParseToLong(token: String): Long? {
         return try {
             token.toLong()
         } catch (e: NumberFormatException) {
@@ -52,7 +51,7 @@ class SortingTool {
         }
     }
 
-    private fun <T : Comparable<T>> printResults(elements: List<T>) {
+    private fun <T : Comparable<T>> printResultsSelector(elements: List<T>) {
         when (config.sortingType) {
             SortingType.NATURAL -> printElementsNatural(elements)
             SortingType.BY_COUNT -> printElementsByCount(elements)
@@ -64,17 +63,26 @@ class SortingTool {
         val name = config.inputType.getName()
         val sortedElements = elements.sorted()
                 .joinToString(separator)
-        println("Total ${name}s: ${elements.size}.")
-        println("Sorted data:$separator$sortedElements")
+        val result = "Total ${name}s: ${elements.size}.\nSorted data:$separator$sortedElements"
+        outputResultsToUser(result)
     }
 
     private fun <T : Comparable<T>> printElementsByCount(elements: List<T>) {
         val occurrences = countOccurrences(elements)
         val count = elements.count()
-        println("Total ${config.inputType.getName()}s: $count")
+        var result = "Total ${config.inputType.getName()}s: $count\n"
         occurrences.entries.forEach {
             val percentage = (100.0 * it.value / count).toInt()
-            println("${it.key}: ${it.value} time(s), $percentage%")
+            result += "${it.key}: ${it.value} time(s), $percentage%\n"
+        }
+        outputResultsToUser(result)
+    }
+
+    private fun outputResultsToUser(result: String) {
+        if (config.outputFileName.isEmpty()) {
+            println(result)
+        } else {
+            File(config.outputFileName).writeText(result)
         }
     }
 
