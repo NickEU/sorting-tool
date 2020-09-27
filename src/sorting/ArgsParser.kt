@@ -21,7 +21,7 @@ object ArgsParser {
             return ""
         }
 
-        return args[parseFindIndexOfArg(idxOfCmd, cmd)]
+        return args[getIdxOfArgForCmd(idxOfCmd, cmd)]
     }
 
     private fun parseArgsForInvalidCommands() {
@@ -38,7 +38,7 @@ object ArgsParser {
             return InputType.WORD
         }
 
-        val argIdx: Int = parseFindIndexOfArg(idxOfDataTypeCmd, "data")
+        val argIdx: Int = getIdxOfArgForCmd(idxOfDataTypeCmd, "data")
 
         return when (args[argIdx]) {
             "long" -> InputType.LONG
@@ -55,7 +55,7 @@ object ArgsParser {
             return SortingType.NATURAL
         }
 
-        val argIdx: Int = parseFindIndexOfArg(idxOfSortingTypeCmd, "sorting")
+        val argIdx: Int = getIdxOfArgForCmd(idxOfSortingTypeCmd, "sorting")
 
         return when (args[argIdx]) {
             "natural" -> SortingType.NATURAL
@@ -65,7 +65,7 @@ object ArgsParser {
         }
     }
 
-    private fun parseFindIndexOfArg(idxOfCmd: Int, cmdType: String): Int {
+    private fun getIdxOfArgForCmd(idxOfCmd: Int, cmdType: String): Int {
         val potentialArgIdx = idxOfCmd + 1
         if (args.lastIndex < potentialArgIdx || args[potentialArgIdx].startsWith("-")) {
             println("No $cmdType type defined!")
